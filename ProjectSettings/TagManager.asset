@@ -1,0 +1,81 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Enemy
+  - Health
+  - Barrel
+  - Bullet
+  - MachineOfPlayer
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - EnemyBullet
+  - PlayerBullet
+  - Player
+  - Enemy
+  - ItemDontDestroy
+  - Ground
+  - Wall
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Background
+    uniqueID: 1534538115
+    locked: 0
+  - name: Ground
+    uniqueID: 3067408091
+    locked: 0
+  - name: Water
+    uniqueID: 4204577107
+    locked: 0
+  - name: Road
+    uniqueID: 3331541323
+    locked: 0
+  - name: Floor
+    uniqueID: 827957009
+    locked: 0
+  - name: Bullets
+    uniqueID: 2244648659
+    locked: 0
+  - name: Furniture
+    uniqueID: 3315037653
+    locked: 0
+  - name: Wall
+    uniqueID: 2067093287
+    locked: 0
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Player
+    uniqueID: 3235002799
+    locked: 0
+  - name: Roof
+    uniqueID: 765185423
+    locked: 0
+  - name: UI
+    uniqueID: 2791922473
+    locked: 0
