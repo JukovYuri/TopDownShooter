@@ -9,6 +9,7 @@ public class Zombie : MainCharacter
 {
 	public int damage = -25;
 
+	public float viewAngle = 90f;
 	public float returnRadius = 30f;
 	public float moveRadius = 10f;
 	public float attackRadius = 3f;
@@ -133,7 +134,6 @@ public class Zombie : MainCharacter
 	{
 		print("STAND");
 
-		Debug.DrawRay(transform.position, -transform.up * 20, Color.red);
 
 		if (distanceToPlayer > returnRadius && Vector3.Distance(zombieMoving.startPosition, transform.position) > 0.1f)
 		{
@@ -156,9 +156,7 @@ public class Zombie : MainCharacter
 	{
 		print("ROTATE_TO_PLAYER");
 
-		
-
-		if (distanceToPlayer < moveRadius)
+		if (distanceToPlayer < moveRadius && hit.collider == null)
 		{
 			ChangeState(ZombieState.MOVE_TO_PLAYER);
 			return;
@@ -175,33 +173,41 @@ public class Zombie : MainCharacter
 			return;
 		}
 		zombieMoving.RotateOnly();
+		ShowViewZone();
 	}
 
 
 	private void DoAttack()
 	{
 		print("ATTACK");
-		if (distanceToPlayer > attackRadius)
+		if (distanceToPlayer > attackRadius && hit.collider == null)
 		{
 			ChangeState(ZombieState.MOVE_TO_PLAYER);
 			return;
 		}
+		ShowViewZone();
 	}
 
 	private void DoMoveToPlayer()
 	{
 		print("MOVE");
-		if (distanceToPlayer > moveRadius && distanceToPlayer < returnRadius)
+		if (distanceToPlayer > moveRadius && distanceToPlayer < returnRadius && hit.collider == null)
 		{
 			ChangeState(ZombieState.ROTATE_TO_PLAYER);
 			return;
 		}
-		else if (distanceToPlayer < attackRadius)
+		else if (distanceToPlayer < attackRadius && hit.collider == null)
 		{
 			ChangeState(ZombieState.ATTACK);
 			return;
 		}
+		else if (hit.collider == null)
+		{
+			ChangeState(ZombieState.STAND);
+			return;
+		}
 		zombieMoving.ToPlayerMoving();
+		ShowViewZone();
 	}
 
 	private void DoReturn()
@@ -212,7 +218,7 @@ public class Zombie : MainCharacter
 			ChangeState(ZombieState.STAND);
 			return;
 		}
-		if (distanceToPlayer > moveRadius && distanceToPlayer < returnRadius)
+		if (distanceToPlayer > moveRadius && distanceToPlayer < returnRadius && hit.collider == null)
 		{
 			ChangeState(ZombieState.ROTATE_TO_PLAYER);
 			return;
@@ -239,6 +245,13 @@ public class Zombie : MainCharacter
 
 		Gizmos.color = Color.green;
 		Gizmos.DrawWireSphere(transform.position, returnRadius);
+
+	}
+
+	private void ShowViewZone()
+	{
+		Debug.DrawRay(transform.position, Quaternion.Euler(0, 0, viewAngle / 2) * -transform.up * returnRadius, Color.red);
+		Debug.DrawRay(transform.position, Quaternion.Euler(0, 0, -viewAngle / 2) * -transform.up * returnRadius, Color.red);
 	}
 
 	public void StartAttack()
@@ -267,7 +280,7 @@ public class Zombie : MainCharacter
 			yield return new WaitForSeconds(fireDelay);
 			if (isLife && player.isLife)
 			{
-				Melee();
+				Hit();
 				player.AddHealth(damage);
 			}
 			else

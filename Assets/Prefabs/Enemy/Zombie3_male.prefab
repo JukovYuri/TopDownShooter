@@ -113,7 +113,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthSlider: {fileID: 5130967003908377783}
-  mainCharacter: {fileID: 4296263660598798366}
+  mainCharacter: {fileID: 3215626280453942537}
 --- !u!1 &3319961307785902867
 GameObject:
   m_ObjectHideFlags: 0
@@ -199,10 +199,13 @@ GameObject:
   - component: {fileID: 4296263660598798353}
   - component: {fileID: 4296263660598798354}
   - component: {fileID: 4296263660598798352}
-  - component: {fileID: 4296263660598798366}
-  - component: {fileID: 4296263660598798367}
   - component: {fileID: 4296263660598798364}
   - component: {fileID: 4296263660598798365}
+  - component: {fileID: 2463960944205273234}
+  - component: {fileID: 168448685}
+  - component: {fileID: 168448686}
+  - component: {fileID: 2094849703983630876}
+  - component: {fileID: 3215626280453942537}
   m_Layer: 11
   m_Name: Zombie3_male
   m_TagString: Enemy
@@ -294,60 +297,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &4296263660598798366
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4296263660598798355}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f1828c1bcd74ae41951ea2b3cb7ce64, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bulletPrefab: {fileID: 0}
-  shootPosition: {fileID: 0}
-  health: 100
-  chanceOfDropping: 0.5
-  prefabDropBonus:
-  - {fileID: 814784248428878890, guid: c7bb10ff0d1c1074d81eff55273a7f76, type: 3}
-  - {fileID: 9176450692686756792, guid: 7dc8e3b64bd250142b8ef0e0ef1816df, type: 3}
-  layerOfBullets: EnemyBullet
-  isLife: 1
-  fireRate: 1
-  nextFire: 0
-  animator: {fileID: 0}
-  circleCollider: {fileID: 0}
-  sr: {fileID: 0}
-  damage: -25
-  returnRadius: 20
-  moveRadius: 15
-  attackRadius: 5
-  waitingTimeForPatrol: 3
-  activeState: 0
---- !u!114 &4296263660598798367
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4296263660598798355}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ccee6382d65abe4c86ddc6d17c09af4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 6
-  rb: {fileID: 0}
-  animator: {fileID: 0}
-  wayPoints:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  isPatrol: 0
-  startPosition: {x: 0, y: 0, z: 0}
 --- !u!50 &4296263660598798364
 Rigidbody2D:
   serializedVersion: 4
@@ -385,6 +334,139 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 1.7019403
+--- !u!114 &2463960944205273234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4296263660598798355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9679e68a0f1144e79c664d9a11ca121, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  target: {fileID: 0}
+--- !u!114 &168448685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4296263660598798355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6eb1402c17e84a9282a7f0f62eb584f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 2
+  radius: 1.88
+  height: 2
+  repathRate: 0.5
+  canSearch: 1
+  canMove: 1
+  maxSpeed: 10
+  gravity: {x: NaN, y: NaN, z: NaN}
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  centerOffsetCompatibility: NaN
+  orientation: 1
+  enableRotation: 1
+  targetCompatibility: {fileID: 0}
+  maxAcceleration: -2.5
+  rotationSpeed: 360
+  slowdownDistance: 0.6
+  pickNextWaypointDist: 2
+  endReachedDistance: 0.2
+  alwaysDrawGizmos: 1
+  slowWhenNotFacingTarget: 0
+  whenCloseToDestination: 0
+  constrainInsideGraph: 0
+--- !u!114 &168448686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4296263660598798355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 373b52eb9bf8c40f785bb6947a1aee66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  drawGizmos: 1
+  detailedGizmos: 0
+  startEndModifier:
+    addPoints: 0
+    exactStartPoint: 3
+    exactEndPoint: 3
+    useRaycasting: 0
+    mask:
+      serializedVersion: 2
+      m_Bits: 4294967295
+    useGraphRaycasting: 0
+  traversableTags: -1
+  tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  graphMask:
+    value: -1
+--- !u!114 &2094849703983630876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4296263660598798355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb6a34d769a1e4ac7b0b30e433aa443c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  smoothType: 0
+  subdivisions: 2
+  iterations: 2
+  strength: 0.5
+  uniformLength: 1
+  maxSegmentLength: 2
+  bezierTangentLength: 0.4
+  offset: 0.2
+  factor: 0.1
+--- !u!114 &3215626280453942537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4296263660598798355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 416d1195ce4cb0a4ca135b4acd226bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bulletPrefab: {fileID: 0}
+  shootPosition: {fileID: 0}
+  layerOfBullets: default
+  fireRate: 1
+  nextFire: 0
+  health: 100
+  isLife: 1
+  chanceOfDropping: 0.5
+  prefabDropBonus:
+  - {fileID: 814784248428878890, guid: c7bb10ff0d1c1074d81eff55273a7f76, type: 3}
+  - {fileID: 9176450692686756792, guid: 7dc8e3b64bd250142b8ef0e0ef1816df, type: 3}
+  animator: {fileID: 0}
+  circleCollider: {fileID: 0}
+  sr: {fileID: 0}
+  damage: -25
+  viewAngle: 90
+  returnRadius: 30
+  moveRadius: 15
+  attackRadius: 5
+  waitingTimeForPatrol: 3
+  activeState: 0
 --- !u!1 &6957875824610287488
 GameObject:
   m_ObjectHideFlags: 0

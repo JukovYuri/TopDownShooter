@@ -13,6 +13,12 @@ public class GameManager : MonoBehaviour
 	public Text textCountDown;
 	LevelManager levelManager;
 	Coroutine coroutineRestart;
+
+	public Image imageWeapon;
+	public Image imageWeaponParent;
+
+	public Sprite[] weapons;
+
 	Player player;
 
 	private void Awake()
@@ -26,20 +32,27 @@ public class GameManager : MonoBehaviour
 		player.OnPlayerDie += RestartGame;
 	}
 
+	public void SetSpriteWeapon(int weapon)
+	{
+		imageWeapon.sprite = weapons[weapon];
+		imageWeapon.SetNativeSize();
+		imageWeaponParent.rectTransform.sizeDelta = 
+		new Vector2(imageWeapon.rectTransform.rect.width + 700f, imageWeaponParent.rectTransform.rect.height);
+	}
 
 	public void SetTextHealth(int health)
 	{
-		textHealth.text = $"Health: {health}";
+		textHealth.text = $"{health}";
 	}
 
 	public void SetTextMoney(int money)
 	{
-		textMoney.text = $"Money: {money}";
+		textMoney.text = $"х {money}";
 	}
 	
 	public void SetTextBullets(int bullets)
 	{
-		textBullets.text = $"Bullets: {bullets}";
+		textBullets.text = $"х {bullets}";
 	}
 
 	public void RestartGame() 

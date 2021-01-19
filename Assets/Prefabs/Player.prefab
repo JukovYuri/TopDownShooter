@@ -106,7 +106,7 @@ SpriteRenderer:
   m_SortingLayerID: -1059964497
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 8f0d65d1b91be894dbc5743c772b2029, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e0075869ac547c7499dc8db3d3aa1ba5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -181,6 +181,8 @@ MonoBehaviour:
   sr: {fileID: 0}
   bullets: 15
   money: 20
+  hitDistance: 6
+  hitAngle: 30
 --- !u!114 &4661461563521142892
 MonoBehaviour:
   m_ObjectHideFlags: 0

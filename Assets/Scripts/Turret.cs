@@ -7,12 +7,12 @@ public class Turret : MonoBehaviour
 	public Bullet bulletPrefab;
 	public GameObject shootPosition;
 	private string layerMaskName = "PlayerBullet";
+	public float shootingAngle = 14f;
 
 	[HideInInspector] public SpriteRenderer sr;
 	[HideInInspector] public bool isTurretReady;
 
 	public float fireRate = 1f;
-	public float angleOfFire = 14f;
 	[HideInInspector] public float nextFire;
 
 	[HideInInspector] public Animator animator;
@@ -43,6 +43,7 @@ public class Turret : MonoBehaviour
 
 			return;
 		}
+
 		transform.up = machine.transform.up;
 	}
 
@@ -52,12 +53,22 @@ public class Turret : MonoBehaviour
 		Vector3 direction = targetPosition - objectPosition;
 		direction.z = 0;
 
-		float angle = Vector2.Angle(machine.transform.up, -direction);
-		if (angle > 15)
+		float angle = Vector2.SignedAngle(machine.transform.up, -direction);
+		print(angle);
+		if (angle > shootingAngle)
 		{
+			transform.rotation = Quaternion.Euler(0, 0, shootingAngle);
 			return;
 		}
+
+		if (angle < -shootingAngle)
+		{
+			transform.rotation = Quaternion.Euler(0, 0, -shootingAngle);
+			return;
+		}
+
 		transform.up = -direction;
+
 
 	}
 

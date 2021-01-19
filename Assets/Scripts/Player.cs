@@ -10,7 +10,12 @@ public class Player : MainCharacter
 	GameManager gameManager;
 	public int bullets = 15;
 	public int money = 20;
-	private enum Weapons
+	public float hitDistance;
+	public float hitAngle = 20;
+
+	public Weapons activeWeapon;
+
+	public enum Weapons
 	{
 		BAT,
 		PISTOL,
@@ -19,15 +24,14 @@ public class Player : MainCharacter
 
 
 	public override void Start()
-	{
+	{	
 		gameManager = FindObjectOfType<GameManager>();
 		base.Start();
 		gameManager.SetTextBullets(bullets);
 		gameManager.SetTextMoney(money);
-
+		SetBullets(bullets);
+		SetWeapon(Weapons.BAT);
 	}
-
-
 
 	public void Update()
 	{
@@ -38,10 +42,33 @@ public class Player : MainCharacter
 
 		if (Input.GetKeyDown(KeyCode.Space))
 		{
-			animator.SetTrigger("ChangeWeapon");
+			ChangeWeapon();
 		}
 
 		CheckFire();
+	}
+
+	public void SetWeapon(Weapons weapon)
+	{
+		activeWeapon = weapon;
+		gameManager.SetSpriteWeapon((int) weapon);
+
+	}
+
+	public void ChangeWeapon()
+	{
+		activeWeapon++;
+
+		if ((int) activeWeapon > Enum.GetNames(typeof(Weapons)).Length - 1)
+		{
+			SetWeapon(Weapons.BAT);
+			animator.SetTrigger(Weapons.BAT.ToString());
+			return;
+		}
+		SetWeapon(activeWeapon);
+		animator.SetTrigger(activeWeapon.ToString());
+
+
 	}
 
 
@@ -51,13 +78,13 @@ public class Player : MainCharacter
 		{
 			if (bullets < 1)
 			{
-				animator.SetTrigger(Weapons.BAT.ToString());
+				Hit();
 			}
 			else
 			{
+				Shoot();
 				SetBullets(--bullets);
-			}
-			Shoot();
+			}			
 			nextFire = fireRate;
 		}
 
@@ -90,13 +117,14 @@ public class Player : MainCharacter
 	public void AddBullets(int bullets)
 	{
 		this.bullets += bullets;
-		gameManager.SetTextBullets(this.bullets);
+		SetBullets(this.bullets);
 	}
 
 	public void SetBullets(int bullets)
 	{
 		this.bullets = bullets;
 		gameManager.SetTextBullets(this.bullets);
+		animator.SetInteger("Bullets", bullets);
 	}
 
 	public void SetHealth(int health)
@@ -104,6 +132,12 @@ public class Player : MainCharacter
 		this.health = health;
 		gameManager.SetTextHealth(health);
 
+	}
+
+	private void OnDrawGizmos()
+	{
+		Gizmos.color = Color.magenta;
+		Gizmos.DrawWireSphere(transform.position, hitDistance);
 	}
 
 }

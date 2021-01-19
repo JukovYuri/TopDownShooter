@@ -10,19 +10,15 @@ public class MainCharacter : MonoBehaviour
 
 	public Bullet bulletPrefab;
 	public GameObject shootPosition;
-	public int health = 100;
-
-	[Range(0, 1)] public float chanceOfDropping = 0.5f;
-	public GameObject[] prefabDropBonus;
-
 	public string layerOfBullets = "default";
-
-	public bool isLife = true;
-
 	public float fireRate = 1f;
 	[HideInInspector] public float nextFire;
 
-	//bool timerStart = false;
+	public int health = 100;
+	public bool isLife = true;
+
+	[Range(0, 1)] public float chanceOfDropping = 0.5f;
+	public GameObject[] prefabDropBonus;
 
 	[HideInInspector] public Animator animator;
 	[HideInInspector] public CircleCollider2D circleCollider;
@@ -56,11 +52,9 @@ public class MainCharacter : MonoBehaviour
 		}
 	}
 
-	public void Melee()
+	public void Hit()
 	{
-		//todo sound
-		animator.SetTrigger("Melee");
-
+		animator.SetTrigger("Hit");
 	}
 
 	public void AddHealth(int health)
@@ -102,5 +96,6 @@ public class MainCharacter : MonoBehaviour
 			}		
 		}
 	}
+
 
 }

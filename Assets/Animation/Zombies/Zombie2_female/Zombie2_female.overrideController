@@ -7,13 +7,13 @@ AnimatorOverrideController:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Zombie2_female
-  m_Controller: {fileID: 9100000, guid: 0ed3075bb84dbaa43ae192243a06b904, type: 2}
+  m_Controller: {fileID: 9100000, guid: 079637ffd549dd442bc6a6edab449393, type: 2}
   m_Clips:
-  - m_OriginalClip: {fileID: 7400000, guid: 2d6e3cbadb94ca74fb817d2a122477e9, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 414f6e22a787e1440b4ad6a6408f269e, type: 2}
     m_OverrideClip: {fileID: 7400000, guid: baaa04bb2d77a7341bd38d9b9322e086, type: 2}
-  - m_OriginalClip: {fileID: 7400000, guid: ffb5fb60efbe2b04184aff655ea83923, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: d0f5fa4d42b69b846a37283225cb6d31, type: 2}
     m_OverrideClip: {fileID: 7400000, guid: 4031917bcb185a940b4bd4146b20eca1, type: 2}
-  - m_OriginalClip: {fileID: 7400000, guid: 513c30d168759424280f5dfc84aa4c31, type: 2}
-    m_OverrideClip: {fileID: 7400000, guid: fc9ca5191d27ca04cb482840590f7e80, type: 2}
-  - m_OriginalClip: {fileID: 7400000, guid: 8f229f5b398e55149a8c416bd3a4cc4d, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 7abd0edc9b6845e46948ea8ce3f0cf0c, type: 2}
     m_OverrideClip: {fileID: 7400000, guid: eb52ff5148a7c0248b21bcbac0dd1005, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 5a73313eb0d54384c9d2a4b29be63def, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: fc9ca5191d27ca04cb482840590f7e80, type: 2}
