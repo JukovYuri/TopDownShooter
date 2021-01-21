@@ -39,8 +39,10 @@ public class Zombie : MainCharacter
 
 	public override void Start()
 	{
+
+
 		base.Start();
-		player = FindObjectOfType<Player>();
+		player = Player.Instance;
 		ChangeState(ZombieState.STAND);
 		layer = LayerMask.GetMask("Wall", "Obstacles");
 

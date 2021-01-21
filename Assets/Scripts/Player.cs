@@ -6,6 +6,7 @@ using UnityEngine;
 public class Player : MainCharacter
 
 {
+	public static Player Instance;
 	public Action OnPlayerDie = delegate { };
 	GameManager gameManager;
 	public int bullets = 15;
@@ -22,9 +23,22 @@ public class Player : MainCharacter
 		RIFFLE
 	}
 
+	public override void Awake()
+	{
+		base.Awake();
+		if (Player.Instance != null)
+		{
+			Destroy(gameManager);
+			return;
+		}
+		Instance = this;
+
+	}
+
 
 	public override void Start()
-	{	
+	{
+
 		gameManager = FindObjectOfType<GameManager>();
 		base.Start();
 		gameManager.SetTextBullets(bullets);
@@ -140,4 +154,8 @@ public class Player : MainCharacter
 		Gizmos.DrawWireSphere(transform.position, hitDistance);
 	}
 
+	private void OnDestroy()
+	{
+			
+	}
 }
