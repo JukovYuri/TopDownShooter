@@ -366,7 +366,7 @@ MonoBehaviour:
   repathRate: 0.5
   canSearch: 1
   canMove: 1
-  maxSpeed: 10
+  maxSpeed: 4
   gravity: {x: NaN, y: NaN, z: NaN}
   groundMask:
     serializedVersion: 2
@@ -460,10 +460,11 @@ MonoBehaviour:
   animator: {fileID: 0}
   circleCollider: {fileID: 0}
   sr: {fileID: 0}
+  rb: {fileID: 0}
   damage: -25
   viewAngle: 90
-  returnRadius: 30
-  moveRadius: 15
+  returnRadius: 35
+  moveRadius: 25
   attackRadius: 5
   waitingTimeForPatrol: 3
   activeState: 0

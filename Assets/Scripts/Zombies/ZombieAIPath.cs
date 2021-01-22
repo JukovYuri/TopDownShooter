@@ -16,6 +16,7 @@ public class ZombieAIPath : MainCharacter
 	public float attackRadius = 3f;
 	public float waitingTimeForPatrol = 3f;
 
+	private Transform startTransform;
 	private Vector3 startPosition;
 
 	LayerMask layer;
@@ -49,9 +50,8 @@ public class ZombieAIPath : MainCharacter
 		layer = LayerMask.GetMask("Wall", "Obstacles");
 
 		player.OnPlayerDie += ChangeStateInStand;
-
+		startTransform = transform;
 		startPosition = transform.position;
-		startPosition.z = 0;
 	}
 
 	public override void Awake()
@@ -71,6 +71,8 @@ public class ZombieAIPath : MainCharacter
 
 		hit = Physics2D.Raycast(transform.position, player.transform.position - transform.position, returnRadius, layer);
 		distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
+		
+		print(rb.velocity.magnitude);
 
 		switch (activeState)
 		{
@@ -108,32 +110,40 @@ public class ZombieAIPath : MainCharacter
 		{
 			case ZombieState.STAND:
 				aIPath.enabled = false;
+				animator.SetFloat("Speed", 0);
 				print("TO_STAND");
 				break;
 
 			case ZombieState.ROTATE_TO_PLAYER:
 				aIPath.enabled = false;
+				animator.SetFloat("Speed", 0);
 				print("TO_ROTATE_TO_PLAYER");
 				break;
 
 			case ZombieState.ATTACK:
 				aIPath.enabled = false;
+				animator.SetFloat("Speed", 0);
 				StartAttack();
 				print("TO_ATTACK");
 				break;
 
 			case ZombieState.MOVE_TO_PLAYER:
 				aIPath.enabled = true;
+				animator.SetFloat("Speed", 1);
+				aIDestinationSetter.target = player.transform;
 				StopAttack();
 				print("TO_MOVE_TO_PLAYER");
 				break;
 
 			case ZombieState.RETURN:
 				aIPath.enabled = true;
+				animator.SetFloat("Speed", 1);
+				aIDestinationSetter.target = startTransform;
 				print("TO_RETURN");
 				break;
 
 			case ZombieState.PATROL:
+				animator.SetFloat("Speed", 1);
 				aIPath.enabled = true;
 				print("TO_PATROL");
 				break;
@@ -143,108 +153,107 @@ public class ZombieAIPath : MainCharacter
 
 	private void DoStand()
 	{
-		print("STAND");
+		if (distanceToPlayer > returnRadius && Vector3.Distance(startPosition, transform.position) > 0.1f)
+		{
+			ChangeState(ZombieState.RETURN);
+			return;
+		}
+		if (distanceToPlayer > moveRadius && distanceToPlayer < returnRadius) //обзор
+		{
+			ChangeState(ZombieState.ROTATE_TO_PLAYER);
+			return;
+		}
 
+		if (distanceToPlayer > attackRadius && distanceToPlayer < moveRadius) //обзор
+		{
+			ChangeState(ZombieState.MOVE_TO_PLAYER);
+			return;
+		}
+
+		if (distanceToPlayer < attackRadius) //обзор
+		{
+			ChangeState(ZombieState.ATTACK);
+			return;
+		}
+
+		print("STAND");
+	}
+
+	private void DoRotateToPlayer()
+	{
+
+		if (distanceToPlayer > attackRadius && distanceToPlayer < moveRadius) //обзор
+		{
+			ChangeState(ZombieState.MOVE_TO_PLAYER);
+			return;
+		}
 
 		if (distanceToPlayer > returnRadius && Vector3.Distance(startPosition, transform.position) > 0.1f)
 		{
 			ChangeState(ZombieState.RETURN);
 			return;
 		}
-		else if (distanceToPlayer > moveRadius && distanceToPlayer < returnRadius && hit.collider == null)
-		{
-			ChangeState(ZombieState.ROTATE_TO_PLAYER);
-			return;
-		}
 
-		else if (distanceToPlayer < moveRadius && hit.collider == null)
-		{
-			ChangeState(ZombieState.MOVE_TO_PLAYER);
-		}
-	}
-
-	private void DoRotateToPlayer()
-	{
-		print("ROTATE_TO_PLAYER");
-
-		if (distanceToPlayer < moveRadius && hit.collider == null)
-		{
-			ChangeState(ZombieState.MOVE_TO_PLAYER);
-			return;
-		}
-		else if (distanceToPlayer > returnRadius && Vector3.Distance(startPosition, transform.position) > 0.1f)
-		{
-			ChangeState(ZombieState.RETURN);
-			return;
-		}
-
-		else if (distanceToPlayer > returnRadius && Vector3.Distance(startPosition, transform.position) <= 0.1f)
-		{
-			ChangeState(ZombieState.STAND);
-			return;
-		}
-		RotateOnly();
-		ShowViewZone();
-	}
-
-
-	private void DoAttack()
-	{
-		print("ATTACK");
-		if (distanceToPlayer > attackRadius && hit.collider == null)
-		{
-			ChangeState(ZombieState.MOVE_TO_PLAYER);
-			return;
-		}
-		ShowViewZone();
-	}
-
-	private void DoMoveToPlayer()
-	{
-		print("MOVE");
-		if (distanceToPlayer > moveRadius && distanceToPlayer < returnRadius && hit.collider == null)
-		{
-			ChangeState(ZombieState.ROTATE_TO_PLAYER);
-			return;
-		}
-		else if (distanceToPlayer < attackRadius && hit.collider == null)
-		{
-			ChangeState(ZombieState.ATTACK);
-			return;
-		}
-		else if (hit.collider == null)
-		{
-			ChangeState(ZombieState.STAND);
-			return;
-		}
-		aIDestinationSetter.target = player.transform;
-		ShowViewZone();
-	}
-
-	private void DoReturn()
-	{
-		print("RETURN");
 		if (distanceToPlayer > returnRadius && Vector3.Distance(startPosition, transform.position) <= 0.1f)
 		{
 			ChangeState(ZombieState.STAND);
 			return;
 		}
-		if (distanceToPlayer > moveRadius && distanceToPlayer < returnRadius && hit.collider == null)
+
+		print("ROTATE_TO_PLAYER");
+		RotateOnly();
+		ShowViewZone();
+	}
+
+	private void DoAttack()
+	{
+
+		if (distanceToPlayer > attackRadius)
+		{
+			ChangeState(ZombieState.MOVE_TO_PLAYER);
+			return;
+		}
+		print("ATTACK");
+		ShowViewZone();
+	}
+
+	private void DoMoveToPlayer()
+	{
+		if (distanceToPlayer > moveRadius && distanceToPlayer < returnRadius)
 		{
 			ChangeState(ZombieState.ROTATE_TO_PLAYER);
 			return;
 		}
-		aIDestinationSetter.target = transform;
+		if (distanceToPlayer < attackRadius)
+		{
+			ChangeState(ZombieState.ATTACK);
+			return;
+		}
+
+		print("MOVE");
+		ShowViewZone();
+	}
+
+	private void DoReturn()
+	{
+
+		if (distanceToPlayer > returnRadius && Vector3.Distance(startPosition, transform.position) <= 0.1f)
+		{
+			ChangeState(ZombieState.STAND);
+			return;
+		}
+		if (distanceToPlayer > moveRadius && distanceToPlayer < returnRadius)
+		{
+			ChangeState(ZombieState.ROTATE_TO_PLAYER);
+			return;
+		}
+		print("RETURN");
 	}
 
 	private void DoPatrol()
 	{
 		print("PATROL");
 	}
-
-
-
-
 
 	private void OnDrawGizmos()
 	{
@@ -256,7 +265,6 @@ public class ZombieAIPath : MainCharacter
 
 		Gizmos.color = Color.green;
 		Gizmos.DrawWireSphere(transform.position, returnRadius);
-
 	}
 
 	private void ShowViewZone()

@@ -22,10 +22,10 @@ TagManager:
   - PlayerBullet
   - Player
   - Enemy
-  - ItemDontDestroy
+  - 
   - Ground
   - Wall
-  - 
+  - Obstacles
   - 
   - 
   - 

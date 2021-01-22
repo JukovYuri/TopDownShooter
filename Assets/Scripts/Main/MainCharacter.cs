@@ -21,8 +21,10 @@ public class MainCharacter : MonoBehaviour
 	public GameObject[] prefabDropBonus;
 
 	[HideInInspector] public Animator animator;
+
 	[HideInInspector] public CircleCollider2D circleCollider;
 	[HideInInspector] public SpriteRenderer sr;
+	[HideInInspector] public Rigidbody2D rb;
 	[HideInInspector] MainCharacterMoving mainCharacterMoving;
 
 
@@ -31,7 +33,7 @@ public class MainCharacter : MonoBehaviour
 		animator = GetComponent<Animator>();
 		circleCollider = GetComponent<CircleCollider2D>();
 		sr = GetComponent<SpriteRenderer>();
-		
+		rb = GetComponent<Rigidbody2D>();
 		mainCharacterMoving = GetComponent<MainCharacterMoving>();
 	}
 
@@ -80,7 +82,7 @@ public class MainCharacter : MonoBehaviour
 	public void ToDie()
 	{
 		isLife = false;
-		mainCharacterMoving.StopMove();
+		mainCharacterMoving.StopMove(); // лучше отключить скрипт пути
 		circleCollider.enabled = false;
 	}
 

@@ -400,7 +400,7 @@ namespace Pathfinding {
 		protected virtual void CalculateNextRotation (float slowdown, out Quaternion nextRotation) {
 			if (lastDeltaTime > 0.00001f && enableRotation) {
 				Vector2 desiredRotationDirection;
-				desiredRotationDirection = velocity2D;
+				desiredRotationDirection = -velocity2D;
 
 				// Rotate towards the direction we are moving in.
 				// Don't rotate when we are very close to the target.
