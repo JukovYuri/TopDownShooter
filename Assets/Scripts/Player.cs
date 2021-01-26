@@ -94,11 +94,8 @@ public class Player : MainCharacter
 					item.GetComponent<SpriteRenderer>().enabled = true;
 					item.gameObject.GetComponentInChildren<Canvas>().enabled = true;
 				}
-
 			}
-
 		}
-
 	}
 
 	public void SetWeapon(Weapons weapon)

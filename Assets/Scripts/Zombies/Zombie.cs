@@ -63,8 +63,11 @@ public class Zombie : MainCharacter
 			return;
 		}
 
+
 		hit = Physics2D.Raycast(transform.position, player.transform.position - transform.position, returnRadius, layer);
 		distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
+
+		CheckVisiblity();
 
 		switch (activeState)
 		{
@@ -150,7 +153,7 @@ public class Zombie : MainCharacter
 
 		else if (distanceToPlayer < moveRadius && hit.collider == null)
 		{
-			ChangeState(ZombieState.MOVE_TO_PLAYER);		
+			ChangeState(ZombieState.MOVE_TO_PLAYER);
 		}
 	}
 
@@ -230,7 +233,7 @@ public class Zombie : MainCharacter
 
 	private void DoPatrol()
 	{
-		print("PATROL");			
+		print("PATROL");
 	}
 
 
@@ -295,6 +298,20 @@ public class Zombie : MainCharacter
 	public void ChangeStateInStand()
 	{
 		ChangeState(ZombieState.STAND);
+	}
+
+	public void CheckVisiblity()
+	{
+		Vector2 itemDirection = player.transform.position - transform.position;
+
+		if ((distanceToPlayer > player.radiusVisibility) ||
+		   (Vector2.Angle(-player.transform.up, transform.position) > player.angleVisibility / 2) ||
+		   (!Physics2D.Raycast(transform.position, itemDirection, itemDirection.magnitude, player.whatIsObstacles)))
+		{
+			sr.enabled = false;
+			sr.GetComponentInChildren<Canvas>().enabled = false;
+		}
+
 	}
 
 

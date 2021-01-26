@@ -71,6 +71,8 @@ public class ZombieAIPath : MainCharacter
 			return;
 		}
 
+		CheckVisiblity();
+
 		isObstacles = Physics2D.Raycast(transform.position, player.transform.position - transform.position, returnRadius, whatIsObstacles);
 
 		distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
@@ -389,6 +391,20 @@ public class ZombieAIPath : MainCharacter
 		Vector3 direction = targetPosition - objectPosition;
 		direction.z = 0;
 		transform.up = -direction;
+	}
+
+	public void CheckVisiblity()
+	{
+		Vector2 itemDirection = player.transform.position - transform.position;
+
+		if ((distanceToPlayer > player.radiusVisibility) ||
+		   (Vector2.Angle(-player.transform.up, transform.position) > player.angleVisibility / 2) ||
+		   (!Physics2D.Raycast(transform.position, itemDirection, itemDirection.magnitude, player.whatIsObstacles)))
+		{
+			sr.enabled = false;
+			sr.GetComponentInChildren<Canvas>().enabled = false;
+		}
+
 	}
 
 }
