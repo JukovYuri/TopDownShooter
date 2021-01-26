@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3191886724400215192}
-  m_Layer: 14
+  m_Layer: 15
   m_Name: ShootPosition
   m_TagString: Player
   m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 3191886724517382910}
   - component: {fileID: 3191886724517382911}
   - component: {fileID: 3191886724517382897}
-  m_Layer: 14
+  m_Layer: 15
   m_Name: TankTurret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -169,7 +169,7 @@ GameObject:
   - component: {fileID: 3191886725590822472}
   - component: {fileID: 3191886725590822473}
   - component: {fileID: 3191886725590822474}
-  m_Layer: 14
+  m_Layer: 15
   m_Name: Tank
   m_TagString: Untagged
   m_Icon: {fileID: 0}

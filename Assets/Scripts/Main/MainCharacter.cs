@@ -54,7 +54,7 @@ public class MainCharacter : MonoBehaviour
 		}
 	}
 
-	public void Hit()
+	public virtual void Hit()
 	{
 		animator.SetTrigger("Hit");
 	}

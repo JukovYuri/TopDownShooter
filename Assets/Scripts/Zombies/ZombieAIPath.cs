@@ -14,23 +14,24 @@ public class ZombieAIPath : MainCharacter
 	public float returnRadius = 30f;
 	public float moveRadius = 10f;
 	public float attackRadius = 3f;
+	public float noticeAnywayRadius = 6f;
+
 	public float waitingTimeForPatrol = 3f;
 
-	private Transform startTransform;
-	private Vector3 startPosition;
-
-	LayerMask layer;
-	RaycastHit2D hit;
-
-	Player player;
-	AIPath aIPath;
-	AIDestinationSetter aIDestinationSetter;
 	public ZombieState activeState;
 
 	Coroutine checkFire;
-
 	bool startFire;
+
 	float distanceToPlayer;
+
+	Vector3 startPosition;
+
+	public LayerMask whatIsObstacles;
+	bool isObstacles;
+
+	Player player;
+	AIPath aIPath;
 
 	public enum ZombieState
 	{
@@ -47,18 +48,19 @@ public class ZombieAIPath : MainCharacter
 		base.Start();
 		player = FindObjectOfType<Player>();
 		ChangeState(ZombieState.STAND);
-		layer = LayerMask.GetMask("Wall", "Obstacles");
+		whatIsObstacles = LayerMask.GetMask("Wall", "Obstacles");
+
 
 		player.OnPlayerDie += ChangeStateInStand;
-		startTransform = transform;
+
 		startPosition = transform.position;
+
 	}
 
 	public override void Awake()
 	{
 		base.Awake();
 		aIPath = GetComponent<AIPath>();
-		aIDestinationSetter = GetComponent<AIDestinationSetter>();
 	}
 
 	public void Update()
@@ -69,10 +71,10 @@ public class ZombieAIPath : MainCharacter
 			return;
 		}
 
-		hit = Physics2D.Raycast(transform.position, player.transform.position - transform.position, returnRadius, layer);
+		isObstacles = Physics2D.Raycast(transform.position, player.transform.position - transform.position, returnRadius, whatIsObstacles);
+
 		distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
-		
-		print(rb.velocity.magnitude);
+
 
 		switch (activeState)
 		{
@@ -105,7 +107,7 @@ public class ZombieAIPath : MainCharacter
 
 	private void ChangeState(ZombieState newState)
 	{
-
+		
 		switch (newState)
 		{
 			case ZombieState.STAND:
@@ -130,21 +132,20 @@ public class ZombieAIPath : MainCharacter
 			case ZombieState.MOVE_TO_PLAYER:
 				aIPath.enabled = true;
 				animator.SetFloat("Speed", 1);
-				aIDestinationSetter.target = player.transform;
 				StopAttack();
 				print("TO_MOVE_TO_PLAYER");
 				break;
 
 			case ZombieState.RETURN:
+				aIPath.destination = startPosition;
 				aIPath.enabled = true;
 				animator.SetFloat("Speed", 1);
-				aIDestinationSetter.target = startTransform;
 				print("TO_RETURN");
 				break;
 
 			case ZombieState.PATROL:
-				animator.SetFloat("Speed", 1);
 				aIPath.enabled = true;
+				animator.SetFloat("Speed", 1);
 				print("TO_PATROL");
 				break;
 		}
@@ -153,26 +154,23 @@ public class ZombieAIPath : MainCharacter
 
 	private void DoStand()
 	{
-		if (distanceToPlayer > returnRadius && Vector3.Distance(startPosition, transform.position) > 0.1f)
+		if (CheckReturn())
 		{
-			ChangeState(ZombieState.RETURN);
-			return;
-		}
-		if (distanceToPlayer > moveRadius && distanceToPlayer < returnRadius) //обзор
-		{
-			ChangeState(ZombieState.ROTATE_TO_PLAYER);
 			return;
 		}
 
-		if (distanceToPlayer > attackRadius && distanceToPlayer < moveRadius) //обзор
+		if (CheckRotateToPlayer())
 		{
-			ChangeState(ZombieState.MOVE_TO_PLAYER);
 			return;
 		}
 
-		if (distanceToPlayer < attackRadius) //обзор
+		if (CheckMoveToPlayer())
 		{
-			ChangeState(ZombieState.ATTACK);
+			return;
+		}
+
+		if (CheckAttack())
+		{
 			return;
 		}
 
@@ -182,21 +180,18 @@ public class ZombieAIPath : MainCharacter
 	private void DoRotateToPlayer()
 	{
 
-		if (distanceToPlayer > attackRadius && distanceToPlayer < moveRadius) //обзор
+		if (CheckMoveToPlayer())
 		{
-			ChangeState(ZombieState.MOVE_TO_PLAYER);
 			return;
 		}
 
-		if (distanceToPlayer > returnRadius && Vector3.Distance(startPosition, transform.position) > 0.1f)
+		if (CheckReturn())
 		{
-			ChangeState(ZombieState.RETURN);
 			return;
 		}
 
-		if (distanceToPlayer > returnRadius && Vector3.Distance(startPosition, transform.position) <= 0.1f)
+		if (CheckStand())
 		{
-			ChangeState(ZombieState.STAND);
 			return;
 		}
 
@@ -207,29 +202,38 @@ public class ZombieAIPath : MainCharacter
 
 	private void DoAttack()
 	{
-
-		if (distanceToPlayer > attackRadius)
+		if (CheckStand())
 		{
-			ChangeState(ZombieState.MOVE_TO_PLAYER);
 			return;
 		}
+
+		if (CheckMoveToPlayer())
+		{
+			return;
+		}
+
 		print("ATTACK");
 		ShowViewZone();
 	}
 
 	private void DoMoveToPlayer()
 	{
-		if (distanceToPlayer > moveRadius && distanceToPlayer < returnRadius)
+		if (CheckReturn())
 		{
-			ChangeState(ZombieState.ROTATE_TO_PLAYER);
-			return;
-		}
-		if (distanceToPlayer < attackRadius)
-		{
-			ChangeState(ZombieState.ATTACK);
 			return;
 		}
 
+		if (CheckRotateToPlayer())
+		{
+			return;
+		}
+
+		if (CheckAttack())
+		{
+			return;
+		}
+
+		aIPath.destination = player.transform.position;
 		print("MOVE");
 		ShowViewZone();
 	}
@@ -237,14 +241,13 @@ public class ZombieAIPath : MainCharacter
 	private void DoReturn()
 	{
 
-		if (distanceToPlayer > returnRadius && Vector3.Distance(startPosition, transform.position) <= 0.1f)
+		if (CheckStand())
 		{
-			ChangeState(ZombieState.STAND);
 			return;
 		}
-		if (distanceToPlayer > moveRadius && distanceToPlayer < returnRadius)
+
+		if (CheckRotateToPlayer())
 		{
-			ChangeState(ZombieState.ROTATE_TO_PLAYER);
 			return;
 		}
 		print("RETURN");
@@ -255,7 +258,65 @@ public class ZombieAIPath : MainCharacter
 		print("PATROL");
 	}
 
-	private void OnDrawGizmos()
+	private bool CheckReturn()
+	{
+		if (Vector3.Distance(startPosition, transform.position) > 0.1f && 
+		   (distanceToPlayer > noticeAnywayRadius && isObstacles) ||
+		   (distanceToPlayer > returnRadius))
+		{
+			ChangeState(ZombieState.RETURN);
+			return true;
+		}
+		return false;
+	}
+
+	private bool CheckStand()
+	{
+		if (Vector3.Distance(startPosition, transform.position) <= 0.1f && isObstacles)
+		{
+			ChangeState(ZombieState.STAND);
+			return true;
+		}
+		return false;
+	}
+
+
+
+	private bool CheckRotateToPlayer()
+	{
+		if (distanceToPlayer > moveRadius && distanceToPlayer < returnRadius && !isObstacles) //обзор
+		{
+			ChangeState(ZombieState.ROTATE_TO_PLAYER);
+			return true;
+		}
+		return false;
+	}
+
+	private bool CheckMoveToPlayer()
+	{
+		if ((distanceToPlayer > attackRadius && distanceToPlayer < moveRadius && !isObstacles) ||
+			(distanceToPlayer > attackRadius && distanceToPlayer < noticeAnywayRadius && isObstacles))
+		{
+			ChangeState(ZombieState.MOVE_TO_PLAYER);
+			return true;
+		}
+		return false;
+	}
+
+	private bool CheckAttack()
+	{
+		if (distanceToPlayer <= attackRadius && !isObstacles) //обзор
+		{
+			ChangeState(ZombieState.ATTACK);
+			return true;
+		}
+		return false;
+	}
+
+
+
+
+	private void OnDrawGizmosSelected()
 	{
 		Gizmos.color = Color.red;
 		Gizmos.DrawWireSphere(transform.position, attackRadius);
@@ -265,6 +326,9 @@ public class ZombieAIPath : MainCharacter
 
 		Gizmos.color = Color.green;
 		Gizmos.DrawWireSphere(transform.position, returnRadius);
+
+		Gizmos.color = Color.yellow;
+		Gizmos.DrawWireSphere(transform.position, noticeAnywayRadius);
 	}
 
 	private void ShowViewZone()

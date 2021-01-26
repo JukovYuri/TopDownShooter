@@ -11,10 +11,19 @@ public class Player : MainCharacter
 	GameManager gameManager;
 	public int bullets = 15;
 	public int money = 20;
+
+	public float radiusVisibility;
+	public float angleVisibility;
+
 	public float hitDistance;
 	public float hitAngle = 20;
 
 	public Weapons activeWeapon;
+
+	public LayerMask whatIsEnemy;
+	public LayerMask whatIsObstacles;
+
+	Collider2D[] enemyColliders;
 
 	public enum Weapons
 	{
@@ -54,6 +63,11 @@ public class Player : MainCharacter
 			return;
 		}
 
+		CheckEnemyVisiblity();
+
+
+
+
 		if (Input.GetKeyDown(KeyCode.Space))
 		{
 			ChangeWeapon();
@@ -62,10 +76,35 @@ public class Player : MainCharacter
 		CheckFire();
 	}
 
+
+	public void CheckEnemyVisiblity()
+	{
+
+
+		enemyColliders = Physics2D.OverlapCircleAll(transform.position, radiusVisibility, whatIsEnemy);
+
+		foreach (Collider2D item in enemyColliders)
+		{
+			Vector2 itemDirection = item.transform.position - transform.position;
+
+			if (Vector2.Angle(-transform.up, itemDirection) < angleVisibility/2)
+			{
+				if (!Physics2D.Raycast(transform.position, itemDirection, itemDirection.magnitude, whatIsObstacles))
+				{
+					item.GetComponent<SpriteRenderer>().enabled = true;
+					item.gameObject.GetComponentInChildren<Canvas>().enabled = true;
+				}
+
+			}
+
+		}
+
+	}
+
 	public void SetWeapon(Weapons weapon)
 	{
 		activeWeapon = weapon;
-		gameManager.SetSpriteWeapon((int) weapon);
+		gameManager.SetSpriteWeapon((int)weapon);
 
 	}
 
@@ -73,7 +112,7 @@ public class Player : MainCharacter
 	{
 		activeWeapon++;
 
-		if ((int) activeWeapon > Enum.GetNames(typeof(Weapons)).Length - 1)
+		if ((int)activeWeapon > Enum.GetNames(typeof(Weapons)).Length - 1)
 		{
 			SetWeapon(Weapons.BAT);
 			animator.SetTrigger(Weapons.BAT.ToString());
@@ -86,20 +125,44 @@ public class Player : MainCharacter
 	}
 
 
+	public override void Hit()
+	{
+		base.Hit();
+
+		Collider2D[] col = Physics2D.OverlapCircleAll(transform.position, hitDistance, whatIsEnemy);
+
+		foreach (Collider2D item in col)
+		{
+			Vector2 direction = item.transform.position - transform.position;
+			if (Vector2.Angle(-transform.up, direction) > hitAngle / 2)
+			{
+				return;
+			}
+			item.GetComponent<Rigidbody2D>().AddForce(item.transform.up * 2000f);
+		}
+	}
+
 	private void CheckFire()
 	{
 		if (Input.GetButton("Fire1") && nextFire <= 0)
 		{
-			if (bullets < 1)
+			nextFire = fireRate;
+
+			if (activeWeapon == Weapons.BAT)
 			{
 				Hit();
+				return;
 			}
-			else
+
+			if (bullets < 1)
 			{
-				Shoot();
-				SetBullets(--bullets);
-			}			
-			nextFire = fireRate;
+				SetWeapon(Weapons.BAT);
+				Hit();
+				return;
+			}
+
+			Shoot();
+			SetBullets(--bullets);
 		}
 
 
@@ -148,14 +211,18 @@ public class Player : MainCharacter
 
 	}
 
-	private void OnDrawGizmos()
-	{
+	private void OnDrawGizmosSelected()
+	{   // угол удара битой
 		Gizmos.color = Color.magenta;
-		Gizmos.DrawWireSphere(transform.position, hitDistance);
+		Gizmos.DrawRay(transform.position, Quaternion.Euler(0, 0, hitAngle) * -transform.up * hitDistance);
+		Gizmos.DrawRay(transform.position, Quaternion.Euler(0, 0, -hitAngle) * -transform.up * hitDistance);
+
+		// видимость
+		Gizmos.color = Color.blue;
+		Gizmos.DrawWireSphere(transform.position, radiusVisibility);
+		Gizmos.DrawRay(transform.position, Quaternion.Euler(0, 0,  angleVisibility/2) * -transform.up * radiusVisibility);
+		Gizmos.DrawRay(transform.position, Quaternion.Euler(0, 0, -angleVisibility/2) * -transform.up * radiusVisibility);
+
 	}
 
-	private void OnDestroy()
-	{
-			
-	}
 }

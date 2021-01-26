@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4661461562896507858}
   m_Layer: 10
-  m_Name: PlayerShootPosition
+  m_Name: ShootPosition
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -169,20 +169,30 @@ MonoBehaviour:
   bulletPrefab: {fileID: 4621299647441964981, guid: c404bb224f4b8504787d78652c252934,
     type: 3}
   shootPosition: {fileID: 4661461562896507859}
-  health: 100
-  chanceOfDropping: 0
-  prefabDropBonus: []
   layerOfBullets: PlayerBullet
-  isLife: 1
   fireRate: 1
   nextFire: 0
+  health: 100
+  isLife: 1
+  chanceOfDropping: 0
+  prefabDropBonus: []
   animator: {fileID: 0}
   circleCollider: {fileID: 0}
   sr: {fileID: 0}
+  rb: {fileID: 0}
   bullets: 15
   money: 20
+  radiusVisibility: 37.73
+  angleVisibility: 120
   hitDistance: 6
   hitAngle: 30
+  activeWeapon: 0
+  whatIsEnemy:
+    serializedVersion: 2
+    m_Bits: 2048
+  whatIsObstacles:
+    serializedVersion: 2
+    m_Bits: 49152
 --- !u!114 &4661461563521142892
 MonoBehaviour:
   m_ObjectHideFlags: 0
